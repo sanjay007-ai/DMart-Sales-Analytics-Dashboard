@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DMart Sales Analytics Dashboard</title>
+
+<link rel="icon" type="image/png" href="assets/favicon.png">
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+</head>
+
+<body>
+
+<!-- Loading Screen -->
+
+<div id="loader">
+
+<div class="spinner"></div>
+
+<h2>Loading DMart Dashboard...</h2>
+
+</div>
+
+<div class="container">
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+<div class="logo-area">
+
+<img src="assets/logo.png" class="logo">
+
+<div>
+
+<h1>DMart Sales Analytics Dashboard</h1>
+
+<p>Retail Sales Intelligence & Business Insights</p>
+
+</div>
+
+</div>
+
+<div class="header-right">
+
+<div id="clock"></div>
+
+<div id="lastUpdated"></div>
+
+<input
+type="text"
+id="searchBox"
+placeholder="Search Customer / Product">
+
+<button id="csvBtn">
+
+<i class="fa-solid fa-file-csv"></i>
+
+CSV
+
+</button>
+
+<button id="pdfBtn">
+
+<i class="fa-solid fa-file-pdf"></i>
+
+PDF
+
+</button>
+
+</div>
+
+</header>
+
+<!-- ================= FILTERS ================= -->
+
+<section class="filters">
+
+    <div class="filter-group">
+        <label>State</label>
+        <select id="stateFilter"></select>
+    </div>
+
+    <div class="filter-group">
+        <label>City</label>
+        <select id="cityFilter"></select>
+    </div>
+
+    <div class="filter-group">
+        <label>Department</label>
+        <select id="departmentFilter"></select>
+    </div>
+
+    <div class="filter-group">
+        <label>Category</label>
+        <select id="categoryFilter"></select>
+    </div>
+
+    <div class="filter-group">
+        <label>Payment Method</label>
+        <select id="paymentFilter"></select>
+    </div>
+
+    <div class="filter-group">
+        <label>Order Status</label>
+        <select id="statusFilter"></select>
+    </div>
+
+    <div class="filter-group">
+        <label>&nbsp;</label>
+        <button id="resetBtn">Reset Filters</button>
+    </div>
+
+</section>
+
+<!-- ================= KPI ================= -->
+
+<section class="cards">
+
+<div class="card">
+
+<i class="fa-solid fa-indian-rupee-sign"></i>
+
+<h3>Total Revenue</h3>
+
+<h2 id="totalSales">₹0</h2>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+<h3>Total Orders</h3>
+
+<h2 id="totalOrders">0</h2>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-users"></i>
+
+<h3>Total Customers</h3>
+
+<h2 id="customers">0</h2>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-box"></i>
+
+<h3>Products Sold</h3>
+
+<h2 id="products">0</h2>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-chart-line"></i>
+
+<h3>Profit</h3>
+
+<h2 id="profit">₹0</h2>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-store"></i>
+
+<h3>Total Stores</h3>
+
+<h2 id="stores">500+</h2>
+
+</div>
+
+</section>
+
+<!-- ================= INDIA MAP ================= -->
+
+
+<section class="map-card">
+
+<h2>DMart Store Presence Across India</h2>
+
+<div id="indiaMap">
+
+<!-- India Map will load here -->
+
+</div>
+
+</section>
+
+<!-- ================= CHARTS ================= -->
+
+<section class="chart-grid">
+
+<div class="chart-card">
+
+<h2>Monthly Sales Trend</h2>
+
+<canvas id="monthlyChart"></canvas>
+
+</div>
+
+<div class="chart-card">
+
+<h2>Revenue by Department</h2>
+
+<canvas id="departmentChart"></canvas>
+
+</div>
+
+<div class="chart-card">
+
+<h2>Category Distribution</h2>
+
+<canvas id="categoryChart"></canvas>
+
+</div>
+
+<div class="chart-card">
+
+<h2>Payment Methods</h2>
+
+<canvas id="paymentChart"></canvas>
+
+</div>
+
+<div class="chart-card">
+
+<h2>Top Products</h2>
+
+<canvas id="productChart"></canvas>
+
+</div>
+
+<div class="chart-card">
+
+<h2>Top Cities</h2>
+
+<canvas id="cityChart"></canvas>
+
+</div>
+
+<div class="chart-card">
+
+<h2>Revenue by State</h2>
+
+<canvas id="stateChart"></canvas>
+
+</div>
+
+<div class="chart-card">
+
+<h2>Profit Trend</h2>
+
+<canvas id="profitChart"></canvas>
+
+</div>
+
+</section>
+
+<!-- ================= TABLE ================= -->
+
+<section class="table-section">
+
+<h2>Recent Orders</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Order ID</th>
+
+<th>Customer</th>
+
+<th>State</th>
+
+<th>City</th>
+
+<th>Department</th>
+
+<th>Category</th>
+
+<th>Amount</th>
+
+<th>Payment</th>
+
+<th>Status</th>
+
+<th>Date</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tableBody">
+
+</tbody>
+
+</table>
+
+</section>
+
+<!-- Pagination -->
+
+<div class="pagination">
+
+<select id="rowsPerPage">
+
+<option>10</option>
+
+<option>25</option>
+
+<option>50</option>
+
+</select>
+
+<button id="prevBtn">Previous</button>
+
+<span id="pageInfo">Page 1</span>
+
+<button id="nextBtn">Next</button>
+
+</div>
+
+<footer>
+
+<p>
+
+Designed & Developed by <b>Sanjay</b> |
+
+DMart Sales Analytics Dashboard |
+
+Portfolio Project 2026
+
+</p>
+
+</footer>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
